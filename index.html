@@ -107,15 +107,19 @@
               <span id="storageStatusText">Auto-Saved (Local + DB)</span>
             </button>
             <!-- Active User Selector so audit logs record who made each change -->
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[11px] text-pine-100">
-              <span>User:</span>
-              <select id="selectActiveUser" class="bg-transparent text-white font-semibold focus:outline-none cursor-pointer">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 border border-white/25 text-[11px] text-pine-50">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>
+              <span>Logged in:</span>
+              <select id="selectActiveUser" class="bg-transparent text-white font-bold focus:outline-none cursor-pointer">
                 <option value="Sahan" class="text-stone-900">Sahan (Me)</option>
                 <option value="Muthumala" class="text-stone-900">Muthumala</option>
                 <option value="Hasanka" class="text-stone-900">Hasanka</option>
                 <option value="Senal" class="text-stone-900">Senal</option>
                 <option value="Sameera" class="text-stone-900">Sameera</option>
               </select>
+              <button type="button" id="btnOpenIdentityModal" class="ml-1 px-1.5 py-0.2 rounded bg-white/20 hover:bg-white/30 text-[10px] font-semibold text-white transition" title="Change saved device user name">
+                Switch
+              </button>
             </div>
           </div>
           <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
@@ -1198,6 +1202,75 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL: ONE-TIME DEVICE USER IDENTITY PROMPT ==================== -->
+  <div id="modalUserIdentity" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-950/75 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-sand-200">
+      <div class="flex items-start justify-between gap-3 pb-3 border-b border-sand-200">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-pine-100 text-pine-800 text-[11px] font-bold mb-1">
+            One-Time Device Setup
+          </span>
+          <h3 class="font-display text-lg sm:text-xl font-bold text-stone-900">Who is using this phone / browser?</h3>
+          <p class="text-xs text-stone-500 mt-1">
+            Tap your name once. We'll save it on this device so every expense, pool payment, or checklist update you make is automatically logged under your name.
+          </p>
+        </div>
+        <button type="button" id="btnCloseIdentityModal" class="text-stone-400 hover:text-stone-600 p-1 text-sm font-bold" title="Close">✕</button>
+      </div>
+
+      <div class="mt-4">
+        <div class="text-xs font-semibold text-stone-700 mb-2">Tap Your Name (Group Travelers):</div>
+        <div id="identityQuickButtons" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button type="button" data-select-identity="Sahan" class="flex items-center gap-2.5 p-3 rounded-xl border border-sand-300 hover:border-pine-600 hover:bg-pine-50 text-left transition">
+            <span class="w-8 h-8 rounded-full bg-pine-700 text-white font-bold text-xs flex items-center justify-center shrink-0">SA</span>
+            <div>
+              <div class="text-sm font-bold text-stone-900">Sahan</div>
+              <div class="text-[11px] text-stone-500">Accommodation</div>
+            </div>
+          </button>
+          <button type="button" data-select-identity="Muthumala" class="flex items-center gap-2.5 p-3 rounded-xl border border-sand-300 hover:border-pine-600 hover:bg-pine-50 text-left transition">
+            <span class="w-8 h-8 rounded-full bg-pine-700 text-white font-bold text-xs flex items-center justify-center shrink-0">MU</span>
+            <div>
+              <div class="text-sm font-bold text-stone-900">Muthumala</div>
+              <div class="text-[11px] text-stone-500">Car / Fuel</div>
+            </div>
+          </button>
+          <button type="button" data-select-identity="Hasanka" class="flex items-center gap-2.5 p-3 rounded-xl border border-sand-300 hover:border-pine-600 hover:bg-pine-50 text-left transition">
+            <span class="w-8 h-8 rounded-full bg-pine-700 text-white font-bold text-xs flex items-center justify-center shrink-0">HA</span>
+            <div>
+              <div class="text-sm font-bold text-stone-900">Hasanka</div>
+              <div class="text-[11px] text-stone-500">BBQ &amp; Drinks</div>
+            </div>
+          </button>
+          <button type="button" data-select-identity="Senal" class="flex items-center gap-2.5 p-3 rounded-xl border border-sand-300 hover:border-pine-600 hover:bg-pine-50 text-left transition">
+            <span class="w-8 h-8 rounded-full bg-pine-700 text-white font-bold text-xs flex items-center justify-center shrink-0">SE</span>
+            <div>
+              <div class="text-sm font-bold text-stone-900">Senal</div>
+              <div class="text-[11px] text-stone-500">Food &amp; First Aid</div>
+            </div>
+          </button>
+          <button type="button" data-select-identity="Sameera" class="flex items-center gap-2.5 p-3 rounded-xl border border-sand-300 hover:border-pine-600 hover:bg-pine-50 text-left transition sm:col-span-2">
+            <span class="w-8 h-8 rounded-full bg-pine-700 text-white font-bold text-xs flex items-center justify-center shrink-0">SM</span>
+            <div>
+              <div class="text-sm font-bold text-stone-900">Sameera</div>
+              <div class="text-[11px] text-stone-500">Meal Plans</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <form id="formCustomIdentity" class="mt-4 pt-3 border-t border-sand-200 space-y-2.5">
+        <label for="inputCustomIdentityName" class="block text-xs font-semibold text-stone-700">Or enter another name (e.g., Guest / Donor):</label>
+        <div class="flex items-center gap-2">
+          <input type="text" id="inputCustomIdentityName" placeholder="Type your name..." class="w-full px-3 py-2 rounded-lg border border-sand-300 text-sm focus:ring-2 focus:ring-pine-600 focus:outline-none" />
+          <button type="submit" class="px-4 py-2 rounded-lg bg-pine-700 hover:bg-pine-800 text-white text-xs font-semibold whitespace-nowrap">
+            Save My Name
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // =========================================================================
     // USER'S OFFICIAL FIREBASE CONFIGURATION (projectId: "trip-temp-1676a")
@@ -1332,7 +1405,46 @@
       return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
     }
 
+    const DEVICE_IDENTITY_KEY = 'riverston_device_identity_v1';
+    let currentDeviceUser = '';
+
+    function loadDeviceIdentity() {
+      try {
+        const saved = localStorage.getItem(DEVICE_IDENTITY_KEY);
+        if (saved && saved.trim()) {
+          currentDeviceUser = saved.trim();
+          return currentDeviceUser;
+        }
+      } catch (e) {
+        // Ignore storage error
+      }
+      return '';
+    }
+
+    function setDeviceIdentity(name, recordInLog = true) {
+      const clean = (name || '').trim() || 'Sahan';
+      currentDeviceUser = clean;
+      try {
+        localStorage.setItem(DEVICE_IDENTITY_KEY, clean);
+      } catch (e) {
+        // Ignore storage error
+      }
+      syncMemberDropdowns();
+      const sel = document.getElementById('selectActiveUser');
+      if (sel) sel.value = clean;
+      if (recordInLog) {
+        saveState({
+          type: 'Note',
+          actor: clean,
+          amount: 0,
+          details: `${clean} signed in on this device (auto-saved for future logs).`
+        });
+        renderAll();
+      }
+    }
+
     function getActiveUser() {
+      if (currentDeviceUser) return currentDeviceUser;
       const sel = document.getElementById('selectActiveUser');
       return (sel && sel.value) ? sel.value : 'Sahan';
     }
@@ -1787,8 +1899,13 @@
       if (packMem) packMem.innerHTML = memberOptions;
       const activeUserSel = document.getElementById('selectActiveUser');
       if (activeUserSel) {
-        const cur = activeUserSel.value || 'Sahan';
-        activeUserSel.innerHTML = state.members.map(m => `<option value="${m.name}" class="text-stone-900" ${m.name === cur ? 'selected' : ''}>${m.name}${m.isMe ? ' (Me)' : ''}</option>`).join('');
+        const cur = currentDeviceUser || activeUserSel.value || 'Sahan';
+        const namesInMembers = state.members.map(m => m.name);
+        let optionsHtml = state.members.map(m => `<option value="${m.name}" class="text-stone-900" ${m.name === cur ? 'selected' : ''}>${m.name}</option>`).join('');
+        if (cur && !namesInMembers.includes(cur)) {
+          optionsHtml += `<option value="${cur}" class="text-stone-900" selected>${cur}</option>`;
+        }
+        activeUserSel.innerHTML = optionsHtml;
       }
     }
 
@@ -2484,8 +2601,69 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const savedIdentity = loadDeviceIdentity();
       initFirebaseSDK();
       renderAll();
+
+      const modalIdentity = document.getElementById('modalUserIdentity');
+      const openIdentityModal = () => {
+        // Render dynamic member buttons in case members were added/edited
+        const qContainer = document.getElementById('identityQuickButtons');
+        if (qContainer && state.members.length > 0) {
+          qContainer.innerHTML = state.members.map(m => `
+            <button type="button" data-select-identity="${m.name.replace(/"/g, '&quot;')}" class="flex items-center gap-2.5 p-3 rounded-xl border ${m.name === currentDeviceUser ? 'border-pine-600 bg-pine-50' : 'border-sand-300 hover:border-pine-600 hover:bg-pine-50'} text-left transition">
+              <span class="w-8 h-8 rounded-full bg-pine-700 text-white font-bold text-xs flex items-center justify-center shrink-0">${m.name.slice(0, 2).toUpperCase()}</span>
+              <div>
+                <div class="text-sm font-bold text-stone-900">${m.name}</div>
+                <div class="text-[11px] text-stone-500">${m.note || 'Traveler'}</div>
+              </div>
+            </button>
+          `).join('');
+        }
+        modalIdentity.classList.remove('hidden');
+        modalIdentity.classList.add('flex');
+      };
+      const closeIdentityModal = () => {
+        modalIdentity.classList.add('hidden');
+        modalIdentity.classList.remove('flex');
+      };
+
+      // Automatically prompt for name on first visit if not saved yet on this device
+      if (!savedIdentity) {
+        openIdentityModal();
+      } else {
+        const sel = document.getElementById('selectActiveUser');
+        if (sel) sel.value = savedIdentity;
+      }
+
+      document.getElementById('btnOpenIdentityModal').addEventListener('click', openIdentityModal);
+      document.getElementById('btnCloseIdentityModal').addEventListener('click', closeIdentityModal);
+
+      document.getElementById('identityQuickButtons').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-select-identity]');
+        if (!btn) return;
+        const chosenName = btn.getAttribute('data-select-identity');
+        setDeviceIdentity(chosenName, true);
+        closeIdentityModal();
+        showToast(`Welcome, ${chosenName}! This device is now saved under your name for all activity logs.`);
+      });
+
+      document.getElementById('formCustomIdentity').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const customInput = document.getElementById('inputCustomIdentityName');
+        const customName = (customInput.value || '').trim();
+        if (!customName) return;
+        setDeviceIdentity(customName, true);
+        customInput.value = '';
+        closeIdentityModal();
+        showToast(`Welcome, ${customName}! This device is now saved under your name for all activity logs.`);
+      });
+
+      document.getElementById('selectActiveUser').addEventListener('change', (e) => {
+        const chosen = e.target.value;
+        setDeviceIdentity(chosen, false);
+        showToast(`Switched active device user to ${chosen}.`);
+      });
 
       // Navigation tabs
       document.querySelectorAll('.nav-tab-btn').forEach(btn => {
