@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "riverston_trip_2027": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
